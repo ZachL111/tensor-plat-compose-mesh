@@ -1,68 +1,40 @@
 # tensor-plat-compose-mesh
 
-`tensor-plat-compose-mesh` is a focused Java codebase around package a Java local lab for compose analysis with negative fixtures, human-readable error snapshots, and documented operating limits. It is meant to be easy to inspect, run, and extend without a hosted service.
+`tensor-plat-compose-mesh` explores platform engineering with a small Java codebase and local fixtures. The technical goal is to package a Java local lab for compose analysis with negative fixtures, human-readable error snapshots, and documented operating limits.
 
-## Tensor Plat Compose Mesh Walkthrough
+## Why I Keep It Small
 
-I would read the project from the outside in: command, fixture, model, then roadmap. That keeps the platform engineering idea grounded in files that can be checked locally.
+The point is to make a small domain rule concrete enough that a reader can change it and immediately see what broke.
 
-## Reason For The Project
+## Tensor Plat Compose Mesh Review Notes
 
-I use this kind of project to make a rule visible before adding more machinery around it. The important part here is not the size of the codebase. It is that the input signals, scoring rule, fixture data, and expected output can all be checked in one sitting.
+The first comparison I would make is `route drift` against `quota pressure` because it shows where the rule is most opinionated.
 
-## How It Is Put Together
+## Included Behavior
 
-The design is intentionally direct: parse or construct a signal, score it, classify it, and verify the expected branch. This makes the repository useful for studying platform engineering behavior without needing a service or database unless the language project itself is SQL. The Java implementation uses a compact package layout and direct assertion checks.
+- `fixtures/domain_review.csv` adds cases for rollout width and quota pressure.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/tensor-plat-compose-walkthrough.md` walks through the case spread.
+- The Java code includes a review path for `route drift` and `quota pressure`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Data Notes
+## Internal Model
 
-`pressure` is the first example I would inspect because it lands on the `review` path with a score of 101. The broader file also keeps `degraded` at -13 and `surge` at 209, which gives the model a useful low-to-high spread.
+The implementation keeps the scoring rule plain: reward signal and confidence, preserve slack, penalize drag, then classify the result into a review lane.
 
-## Capabilities
+The Java code keeps the review rule close to the tests.
 
-- Uses fixture data to keep route policy changes visible in code review.
-- Includes extended examples for rollout constraints, including `surge` and `degraded`.
-- Documents environment checks tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
-
-## Getting It Running
-
-Clone the repository, enter the directory, and run the verifier. No database server, cloud account, or token is required.
-
-## Check The Work
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
-
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Where Things Live
-
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-
-## Tradeoffs
-
-The repository favors determinism over breadth. It does not pull live data, keep secrets, or depend on network access for verification.
-
-## Possible Extensions
-
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add a short report command that prints the score breakdown for a single scenario.
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Add one more platform engineering fixture that focuses on a malformed or borderline input.
-
-## Command Examples
+## Try It Locally
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Validation
+
+The same command runs the local verification path. The highest-scoring domain case is `edge` at 222, which lands in `ship`. The most cautious case is `stress` at 141, which lands in `ship`.
+
+## Scope
+
+The fixture set is small enough to audit by hand. The next useful expansion is malformed input coverage, not extra surface area.
