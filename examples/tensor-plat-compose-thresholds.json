@@ -1,0 +1,17 @@
+{
+  "repo": "tensor-plat-compose-mesh",
+  "thresholds": {
+    "signal": 2,
+    "slack": 2,
+    "confidence": 2,
+    "drag": 4,
+    "ship": 166,
+    "watch": 107
+  },
+  "terms": [
+    "rollout width",
+    "quota pressure",
+    "route drift",
+    "secret scope"
+  ]
+}

@@ -64,3 +64,9 @@ java -cp build/classes io.portfolio.PolicyTest
 java -cp build/classes io.portfolio.DomainReviewTest
 
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-tensor-plat-compose-detail.ps1
+
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-tensor-plat-compose-properties.ps1
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-tensor-plat-compose-golden.ps1
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
